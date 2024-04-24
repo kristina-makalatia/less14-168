@@ -95,18 +95,81 @@ console.log(user4);
 user4.printAge();
 
 // js destructuring
-// const cities = ["tbilisi", "paris", "berlin", "hamburg"];
+const cities = ["tbilisi", "paris", "berlin", "hamburg"];
+
+const [tbilisiCity, ...otherCitities] = cities;
+console.log(tbilisiCity);
+
+console.log(otherCitities);
 
 // object destructring
-// const developer = {
-//   id: 1,
-//   nameUser: "nini",
-//   skills: ["html", "css", "js"],
-//   languages: {
-//     english: "A2",
-//     german: "b2",
-//     georgian: "native",
-//   },
-// };
+const nameUser = "anna";
+
+const developer = {
+  id: 1,
+  nameUser: "nini",
+  skills: ["html", "css", "js"],
+  languages: {
+    english: "A2",
+    german: "b2",
+    georgian: "native",
+  },
+};
+
+const { nameUser: nameUserNew } = developer;
+console.log(nameUserNew);
 
 // practice promise.all
+
+const toDoList = document.getElementById("todo-list");
+let todos = [];
+let users = [];
+
+//5.
+function getUserNames(userId) {
+  const user = users.find((userInfo) => userInfo.id === userId);
+  // console.log(user); //mtliani user obiekti - userebis linkidan
+  return user.name;
+}
+
+// 4.
+function printToDo(userObj) {
+  const li = document.createElement("li");
+  li.innerHTML = `<span>${userObj.title} by <b> ${getUserNames(
+    userObj.id
+  )} </b> </span>`;
+
+  toDoList.appendChild(li);
+}
+
+// 3.
+function getData() {
+  Promise.all([getAllToDos(), getAllUsers()]).then((values) => {
+    // console.log(values);
+    [todos, users] = values;
+    // console.log(todos); //10 obiekti - array - mosuli info https://jsonplaceholder.typicode.com/todos?_limit=10
+    // console.log(users); //10 obiekti - array - mosul iinfo https://jsonplaceholder.typicode.com/users
+
+    todos.forEach((element) => {
+      //   console.log(element); //titoeuli obiketi todos masividan
+      printToDo(element);
+    });
+  });
+}
+getData();
+
+// 1. - ვიღებთ todo ლისტებს
+async function getAllToDos() {
+  const response = await fetch(
+    "https://jsonplaceholder.typicode.com/todos?_limit=10"
+  );
+  const data = await response.json();
+  return data;
+}
+
+// 2. - ვიღებთ უსერებს
+async function getAllUsers() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const dataUsers = await response.json();
+  return dataUsers;
+}
